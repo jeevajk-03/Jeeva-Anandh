@@ -1,0 +1,106 @@
+HTML
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poultry Shop Order Management</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Poultry Shop Order Management</h1>
+        <form id="orderForm">
+            <label for="legs">Number of Legs:</label>
+            <input type="number" id="legs" required>
+            <label for="wings">Number of Wings:</label>
+            <input type="number" id="wings" required>
+            <label for="flesh">Number of Flesh Portions:</label>
+            <input type="number" id="flesh" required>
+            <button type="submit">Calculate Order</button>
+        </form>
+        <div id="results" class="results"></div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+ 
+CSS
+body {
+    font-family: Arial, sans-serif; 
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 20px;
+}
+.container {
+    max-width: 600px;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+h1 {
+    text-align: center;
+}
+label {
+    display: block;
+    margin-top: 10px;
+}
+input {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+}
+button {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #28a745;
+    color: white; 
+    border: none;
+    cursor: pointer;
+}
+button:hover {
+    background-color: #218838;
+}
+.results {
+    margin-top: 20px;
+}
+ 
+JAVASCRIPT
+document.getElementById('orderForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    // Get user input
+    const legsOrdered = parseInt(document.getElementById('legs').value);
+    const wingsOrdered = parseInt(document.getElementById('wings').value);
+    const fleshOrdered = parseInt(document.getElementById('flesh').value);
+    // Constants based on inventory specifications
+    const chickenWeight = 2000; // Total weight of whole chicken in grams
+    const legWeight = 250; // Weight of one leg in grams
+    const wingWeight = 250; // Weight of one wing in grams
+    const fleshWeight = 1000; // Weight of flesh portion in grams
+    // Calculate total weight of the order
+    const totalWeight = (legsOrdered * legWeight) + (wingsOrdered * wingWeight) + (fleshOrdered * fleshWeight); 
+    // Calculate number of whole chickens needed
+    const totalPartsNeeded = legsOrdered + wingsOrdered / 2 + fleshOrdered / 1; // Each chicken provides parts
+    const wholeChickensNeeded = Math.ceil(totalPartsNeeded / (2 + 2 + 1)); // Each chicken has 2 legs, 2 wings, and 1 flesh portion
+    // Calculate remaining parts after fulfilling the order
+    const totalLegsAvailable = wholeChickensNeeded * 2; // Legs from whole chickens
+    const totalWingsAvailable = wholeChickensNeeded * 2; // Wings from whole chickens
+    const totalFleshAvailable = wholeChickensNeeded * 1; // Flesh from whole chickens
+    const remainingLegs = totalLegsAvailable - legsOrdered;
+    const remainingWings = totalWingsAvailable - wingsOrdered;
+    const remainingFlesh = totalFleshAvailable - fleshOrdered;
+    // Calculate total weight of remaining inventory
+    const remainingWeight = (remainingLegs * legWeight) + (remainingWings * wingWeight) + (remainingFlesh * fleshWeight);
+    // Display results
+    document.getElementById('results').innerHTML = `
+        <h2>Order Summary</h2>
+        <p>Total Weight of Order: ${totalWeight / 1000} kg</p>
+        <p>Whole Chickens Needed: ${wholeChickensNeeded}</p>
+        <p>Remaining Legs: ${remainingLegs} (${(remainingLegs * legWeight) / 1000} kg)</p>
+        <p>Remaining Wings: ${remainingWings} (${(remainingWings * wingWeight) / 1000} kg)</p>
+        <p>Remaining Flesh Portions: ${remainingFlesh} (${(remainingFlesh * fleshWeight) / 1000} kg)</p>
+        <p>Total Weight of Remaining Inventory: ${remainingWeight / 1000} kg</p>
+   `;
+});
